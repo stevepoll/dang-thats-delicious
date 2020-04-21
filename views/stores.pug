@@ -5,7 +5,7 @@ include mixins/_storeCard
 block content
   //- pre= h.dump(locals.stores)
   .inner
-  h2= title
-  .stores
-    each store in stores
-      +storeCard(store)
+    h2= title
+    .stores
+      each store in stores
+        +storeCard(store)
