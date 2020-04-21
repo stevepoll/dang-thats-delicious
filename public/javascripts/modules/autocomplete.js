@@ -14,7 +14,6 @@ function autocomplete(input, latInput, lngInput) {
         e.preventDefault()
       }
     })
-
   }
 }
 
