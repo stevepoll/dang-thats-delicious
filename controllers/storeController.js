@@ -50,7 +50,7 @@ exports.createStore = async (req, res) => {
 exports.getStoreBySlug = async (req, res, next) => {
   const store = await Store.findOne({ slug: req.params.slug })
   if (!store) return next()
-  
+
   res.render('store', { title: store.name, store })
 }
 
@@ -84,4 +84,10 @@ exports.updateStore = async (req, res) => {
 
   // 2. Redirect user to the store and tell them it worked
   res.redirect(`/stores/${store._id}/edit`)
+}
+
+exports.getStoresByTag = async (req, res) => {
+  const tags = await Store.getStoresByTag()
+  const tag = req.params.tag
+  res.render('tag', { tags, tag, title: 'Tags' })
 }
