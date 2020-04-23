@@ -7,20 +7,21 @@ const authController = require('../controllers/authController')
 
 const { catchErrors } = require('../handlers/errorHandlers')
 
-// Do work here
 router.get('/', catchErrors(storeController.getStores))
 router.get('/stores', catchErrors(storeController.getStores))
-router.get('/add', storeController.addStore)
-router.get('/stores/:id/edit', catchErrors(storeController.editStore))
-router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
-router.get('/tags', catchErrors(storeController.getStoresByTag))
-router.get('/tags/:tag', catchErrors(storeController.getStoresByTag))
 
+router.get('/add', authController.isLoggedIn, storeController.addStore)
 router.post('/add', 
   storeController.upload,
   catchErrors(storeController.resize),
   catchErrors(storeController.createStore)
 )
+
+router.get('/stores/:id/edit', catchErrors(storeController.editStore))
+router.get('/store/:slug', catchErrors(storeController.getStoreBySlug))
+router.get('/tags', catchErrors(storeController.getStoresByTag))
+router.get('/tags/:tag', catchErrors(storeController.getStoresByTag))
+
 router.post('/add/:id', 
   storeController.upload,
   catchErrors(storeController.resize), 
@@ -28,15 +29,15 @@ router.post('/add/:id',
 )
 
 router.get('/login', userController.loginForm)
-router.get('/register', userController.registerForm)
+router.post('/login', authController.login)
 
-// 1. validate registration data
-// 2. register the user
-// 3. log them in
+router.get('/register', userController.registerForm)
 router.post('/register', 
   userController.validateRegister,
   userController.register,
   authController.login
 )
+
+router.get('/logout', authController.logout)
 
 module.exports = router;
