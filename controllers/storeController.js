@@ -59,8 +59,32 @@ exports.getStoreBySlug = async (req, res, next) => {
 }
 
 exports.getStores = async (req, res) => {
-  const stores = await Store.find()
-  res.render('stores', { "title": "All stores", stores })
+  const page = req.params.page || 1
+  const limit = 4
+  const skip = (page * limit) - limit
+
+  // Query the database for stores
+  const storesPromise = await Store
+    .find()
+    .skip(skip)
+    .limit(limit)
+    .sort({ created: 'desc' })
+
+  const countPromise = Store.count()
+  const [stores, count] = await Promise.all([storesPromise, countPromise])
+
+  // User Math.ceil: If we have 17 stores and 4 per page, we will need 5 pages
+  const pages = Math.ceil(count / limit)
+
+  // Guard against users entering invalid page number in URL
+  // if (!stores.length && skip) {
+  if(page > pages) {
+    req.flash('info', `You asked for page ${page}, but that doesn't exist. Redirecting to last page.`)
+    res.redirect(`/stores/page/${pages}`)
+    return
+  }
+
+  res.render('stores', { "title": "All stores", stores, page, pages, count })
 }
 
 const confirmOwner = (store, user) => {
