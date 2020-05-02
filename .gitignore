@@ -1,6 +1,7 @@
 node_modules
-public/dist
-public/uploads
-npm-debug.log
-*.env
 .DS_Store
+*.log
+.idea
+public/dist
+variables.env
+variables.env.now
